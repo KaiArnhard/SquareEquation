@@ -26,8 +26,8 @@ int SolveLinearEquation (const double b, const double c, double* x1);
 void OutputSolutions (const int NumbSolutions, const double x1, const double x2);
 void InputCoefficients (double *a, double *b, double *c);
 
-void SquareEquationTest ();
-void TestOfOneEquation ();
+bool SquareEquationTest ();
+void UnitTest ();
 
 struct Coefficients
     {
@@ -46,7 +46,7 @@ struct Solutions
 
 int main()
 {
-    SquareEquationTest();
+    UnitTest();
 
     InputCoefficients (&(coeffs.a), &(coeffs.b), &(coeffs.c));
 
@@ -202,14 +202,51 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
         }
 }
 
-void SquareEquationTest ()
+void UnitTest()
 {
-    double rx1 = rand();
-    double rx2 = rand();
-    double  x1 = rx1;
-    double  x2 = rx2;
-
-    int NumbSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
-
-    ASSERT( NumbSolutions == 2 && x1 == 2 && x2 == -2);
+    int i = 0;
+    int NumberOfRightTests = 0;
+    for (i; i < 28; i++)
+    {
+    NumberOfRightTests += SquareEquationTest();
+    }
+    printf ("Number of right tests %d; Number of all tests %d\n", NumberOfRightTests, i);
 }
+
+bool SquareEquationTest ()
+{
+    double rightx1 = 0;
+    double rightx2 = 0;
+    double  x1 = 0;
+    double  x2 = 0;
+    double   a = 0;
+    double   b = 0;
+    double   c = 0;
+
+    int rightNumb = 0;
+
+    const char *FileName = "ForUnitTest.txt";
+
+    FILE *fp = fopen (FileName, "r");
+    assert( fp != 0);
+
+    fscanf (fp, "%lg %lg %lg %lg %lg %d ", &a, &b, &c, &rightx1, &rightx2, &rightNumb);
+
+    int NumbSolutions = SolveSquareEquation ( a, b, c, &x1, &x2);
+
+    if(!( NumbSolutions == rightNumb && x1 == rightx1 && x2 == rightx2))
+    {
+
+        printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
+        printf ("Expected NumbSolutions =%d, x1 =%d, x2 =%d\n", rightNumb, rightx1, rightx2);
+        printf ("%f %f %f \n", a, b, c);
+        return 0;
+    }
+    else
+    printf ("%lg %lg %lg %lg %lg %d \n", a, b, c, rightx1, rightx2, rightNumb);
+
+    return 1;
+}
+
+
+
