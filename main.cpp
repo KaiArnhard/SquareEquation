@@ -1,17 +1,5 @@
-///            Solve of Square Equation
-/**
-*   This program solves square equations ax2+bx+c=0
-*
-*   @param[IN] double a     first coefficient of square equation
-*   @param[IN] double b    second coefficient of square equation
-*   @param[IN] double c     third coefficient of square equation
-*   @param[OUT] double x1    first solution of square equation
-*   @param[OUT] double x2   second solution of square equation
-*   @param[OUT] int nSolutions  quantity of solutions
-*
-**/
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <assert.h>
 
@@ -29,7 +17,7 @@ enum NumberOfSolutions
     ZERO_SOLUTIONS = 0,
     ONE_SOLUTION   = 1,
     TWO_SOLUTIONS  = 2,
-    INF_SOLUTIONS  = 3
+    INF_SOLUTIONS  = -1
 };
 
 int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2);
@@ -104,6 +92,18 @@ void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
     }
 }
 
+///            Solve of Linear Equation
+/**
+*   This function solves linear equations bx+c=0
+*
+*   @param[IN]   double b    first coefficient of linear equation
+*   @param[IN]   double c    second coefficient of linear equation
+*   @param[OUT] double x1    solution of linear equation
+*   @param[OUT] int nSolutions  quantity of solutions
+*
+**/
+
+
 int SolveLinearEquation (double b, double c, double* x1)
 {
     if ( b == 0)
@@ -120,6 +120,20 @@ int SolveLinearEquation (double b, double c, double* x1)
 
     return 1;
 }
+
+///            Solve of Square Equation
+/**
+*   This function solves square equations ax2+bx+c=0
+*
+*   @param[IN] double a     first coefficient of square equation
+*   @param[IN] double b    second coefficient of square equation
+*   @param[IN] double c     third coefficient of square equation
+*   @param[OUT] double x1    first solution of square equation
+*   @param[OUT] double x2   second solution of square equation
+*   @param[OUT] int nSolutions  quantity of solutions
+*
+**/
+
 
 int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
 {
@@ -160,8 +174,10 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
 
 void SquareEquationTest ()
 {
-  double x1 = 0;
-  double x2 = 0;
+  double rx1 = rand();
+  double rx2 = rand();
+  double  x1 = rx1;
+  double  x2 = rx2;
   int NumbSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
   ASSERT( NumbSolutions == 2 && x1 == 2 && x2 == -2);
 }
