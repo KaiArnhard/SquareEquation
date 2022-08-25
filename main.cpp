@@ -35,7 +35,7 @@ enum NumberOfSolutions
 int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2);
 int SolveLinearEquation (const double b, const double c, double* x1);
 
-void OutputSolutions (const int nSolutions, const double x1, const double x2);
+void OutputSolutions (const int NumbSolutions, const double x1, const double x2);
 void InputCoefficients (double* a, double* b, double* c);
 
 void SquareEquationTest ();
@@ -52,11 +52,11 @@ int main()
     double x1 = 0;
     double x2 = 0;
 
-    int nSolutions = 0;
+    int NumbSolutions = 0;
 
-    nSolutions = SolveSquareEquation (a, b, c, &x1, &x2);
+    NumbSolutions = SolveSquareEquation (a, b, c, &x1, &x2);
 
-    OutputSolutions (nSolutions, x1, x2);
+    OutputSolutions (NumbSolutions, x1, x2);
 
     return 0;
 }
@@ -76,9 +76,9 @@ void InputCoefficients(double* a, double* b, double* c)
     }
 }
 
-void OutputSolutions (const int nSolutions, const double x1, const double x2)
+void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
 {
-    switch (nSolutions)
+    switch (NumbSolutions)
     {
         case ZERO_SOLUTIONS:
             printf("There're no solutions\n");
@@ -127,48 +127,34 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
     {
         SolveLinearEquation (b, c, x1);
     }
-    else if (b == 0)
+    else
     {
 
-        if (c < 0)
+        double discr = 0;
+
+        discr = (b * b) - (4 * a * c);
+
+        double sdiscr = sqrt(discr);
+
+        if (discr > 0)
         {
-            int i = sqrt (-c / a);
-            *x1 =  i;
-            *x2 = -i;
+
+            *x1 = (-b + sdiscr) / 2 / a;
+            *x2 = (-b - sdiscr) / 2 / a;
 
             return 2;
         }
-
-        if (c > 0)
+        else if (discr < 0)
         {
+
             return 0;
         }
-    }
+        else if (discr == 0)
+        {
+            *x1 = -b / 2 / a;
 
-    double discr = 0;
-
-    discr = (b * b) - (4 * a * c);
-
-    double sdiscr = sqrt(discr);
-
-    if (discr > 0)
-    {
-
-        *x1 = (-b + sdiscr) / 2 / a;
-        *x2 = (-b - sdiscr) / 2 / a;
-
-        return 2;
-    }
-    else if (discr < 0)
-    {
-
-        return 0;
-    }
-    else if (discr == 0)
-    {
-        *x1 = -b / 2 / a;
-
-        return 1;
+            return 1;
+        }
     }
 }
 
@@ -176,6 +162,6 @@ void SquareEquationTest ()
 {
   double x1 = 0;
   double x2 = 0;
-  int nSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
-  ASSERT( nSolutions == 2 && x1 == 2 && x2 == -2);
+  int NumbSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
+  ASSERT( NumbSolutions == 2 && x1 == 2 && x2 == -2);
 }
