@@ -14,9 +14,9 @@
 
 enum NumberOfSolutions
 {
-    ZERO_SOLUTIONS = 0,
-    ONE_SOLUTION   = 1,
-    TWO_SOLUTIONS  = 2,
+    ZERO_SOLUTIONS =  0,
+    ONE_SOLUTION   =  1,
+    TWO_SOLUTIONS  =  2,
     INF_SOLUTIONS  = -1
 };
 
@@ -24,32 +24,41 @@ int SolveSquareEquation (const double a, const double b, const double c, double*
 int SolveLinearEquation (const double b, const double c, double* x1);
 
 void OutputSolutions (const int NumbSolutions, const double x1, const double x2);
-void InputCoefficients (double* a, double* b, double* c);
+void InputCoefficients (double *a, double *b, double *c);
 
 void SquareEquationTest ();
+void TestOfOneEquation ();
+
+struct Coefficients
+    {
+        double  a;
+        double  b;
+        double  c;
+    } coeffs {0, 0, 0};
+
+struct Solutions
+    {
+        double x1;
+        double x2;
+     } solutions {0, 0};
 
 
 int main()
 {
-    double  a = 0;
-    double  b = 0;
-    double  c = 0;
+    SquareEquationTest();
 
-    InputCoefficients (&a, &b, &c);
-
-    double x1 = 0;
-    double x2 = 0;
+    InputCoefficients (&(coeffs.a), &(coeffs.b), &(coeffs.c));
 
     int NumbSolutions = 0;
 
-    NumbSolutions = SolveSquareEquation (a, b, c, &x1, &x2);
+    NumbSolutions = SolveSquareEquation ( coeffs.a, coeffs.b, coeffs.c, &(solutions.x1), (&solutions.x2));
 
-    OutputSolutions (NumbSolutions, x1, x2);
+    OutputSolutions (NumbSolutions, solutions.x1, solutions.x2);
 
     return 0;
 }
 
-void InputCoefficients(double* a, double* b, double* c)
+void InputCoefficients(double *a, double *b, double *c)
 {
     printf ("Enter coefficients a, b, c\n");
 
@@ -74,12 +83,12 @@ void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
 
         case ONE_SOLUTION:
             printf ("Solution of square equation:\n");
-            printf ("%f \n", x1);
+            printf ("%lg \n", x1);
             break;
 
         case TWO_SOLUTIONS:
             printf ("Solutions of square equation:\n");
-            printf ("%f %f \n", x1, x2);
+            printf ("%lg %lg \n", x1, x2);
             break;
 
         case INF_SOLUTIONS:
@@ -174,10 +183,12 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
 
 void SquareEquationTest ()
 {
-  double rx1 = rand();
-  double rx2 = rand();
-  double  x1 = rx1;
-  double  x2 = rx2;
-  int NumbSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
-  ASSERT( NumbSolutions == 2 && x1 == 2 && x2 == -2);
+    double rx1 = rand();
+    double rx2 = rand();
+    double  x1 = rx1;
+    double  x2 = rx2;
+
+    int NumbSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
+
+    ASSERT( NumbSolutions == 2 && x1 == 2 && x2 == -2);
 }
