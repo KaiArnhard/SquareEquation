@@ -32,8 +32,8 @@ enum NumberOfSolutions
     INF_SOLUTIONS  = 3
 };
 
-int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2, int nSolutions);
-int SolveLinearEquation (const double b, const double c, double* x1, int nSolutions);
+int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2);
+int SolveLinearEquation (const double b, const double c, double* x1);
 
 void OutputSolutions (const int nSolutions, const double x1, const double x2);
 void InputCoefficients (double* a, double* b, double* c);
@@ -54,7 +54,7 @@ int main()
 
     int nSolutions = 0;
 
-    nSolutions = SolveSquareEquation (a, b, c, &x1, &x2, nSolutions);
+    nSolutions = SolveSquareEquation (a, b, c, &x1, &x2);
 
     OutputSolutions (nSolutions, x1, x2);
 
@@ -104,33 +104,28 @@ void OutputSolutions (const int nSolutions, const double x1, const double x2)
     }
 }
 
-int SolveLinearEquation (double b, double c, double* x1, int nSolutions)
+int SolveLinearEquation (double b, double c, double* x1)
 {
     if ( b == 0)
     {
         if (c == 0)
         {
-            nSolutions = INF_SOLUTIONS;
-
-            return nSolutions;
+            return INF_SOLUTIONS;
         }
 
-        nSolutions = 0;
-
-        return nSolutions;
+        return 0;
     }
 
     *x1 = -(c / b);
-    nSolutions = 1;
 
-    return nSolutions;
+    return 1;
 }
 
-int SolveSquareEquation (double a, double b, double c, double* x1, double* x2, int nSolutions)
+int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
 {
     if (a == 0)
     {
-        SolveLinearEquation (b, c, x1, nSolutions);
+        SolveLinearEquation (b, c, x1);
     }
     else if (b == 0)
     {
@@ -140,16 +135,13 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2, i
             int i = sqrt (-c / a);
             *x1 =  i;
             *x2 = -i;
-            nSolutions = 2;
 
-            return nSolutions;
+            return 2;
         }
 
         if (c > 0)
         {
-            nSolutions = 0;
-
-            return nSolutions;
+            return 0;
         }
     }
 
@@ -164,22 +156,19 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2, i
 
         *x1 = (-b + sdiscr) / 2 / a;
         *x2 = (-b - sdiscr) / 2 / a;
-        nSolutions = 2;
 
-        return nSolutions;
+        return 2;
     }
     else if (discr < 0)
     {
-        nSolutions = 0;
 
-        return nSolutions;
+        return 0;
     }
     else if (discr == 0)
     {
         *x1 = -b / 2 / a;
-        nSolutions = 1;
 
-        return nSolutions;
+        return 1;
     }
 }
 
@@ -187,6 +176,6 @@ void SquareEquationTest ()
 {
   double x1 = 0;
   double x2 = 0;
-  int nSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2, nSolutions);
+  int nSolutions = SolveSquareEquation( 1, 0, -4, &x1, &x2);
   ASSERT( nSolutions == 2 && x1 == 2 && x2 == -2);
 }
