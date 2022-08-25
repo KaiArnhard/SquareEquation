@@ -40,7 +40,8 @@ struct Solutions
     {
         double x1;
         double x2;
-     } solutions {0, 0};
+        int NumbSolutions;
+     } solutions {0, 0, 0};
 
 
 int main()
@@ -49,11 +50,10 @@ int main()
 
     InputCoefficients (&(coeffs.a), &(coeffs.b), &(coeffs.c));
 
-    int NumbSolutions = 0;
 
-    NumbSolutions = SolveSquareEquation ( coeffs.a, coeffs.b, coeffs.c, &(solutions.x1), (&solutions.x2));
+    solutions.NumbSolutions = SolveSquareEquation ( coeffs.a, coeffs.b, coeffs.c, &(solutions.x1), &(solutions.x2));
 
-    OutputSolutions (NumbSolutions, solutions.x1, solutions.x2);
+    OutputSolutions (solutions.NumbSolutions, solutions.x1, solutions.x2);
 
     return 0;
 }
@@ -150,10 +150,32 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
     {
         SolveLinearEquation (b, c, x1);
     }
-    else
+    else if (b == 0)
     {
 
+        if (c < 0)
+        {
+            int i = sqrt (-c / a);
+            *x1 =  i;
+            *x2 = -i;
+
+            return 2;
+        }
+
+        if (c > 0)
+        {
+            return 0;
+        }
+    }
+    if (c == 0)
+    {
+        *x1 = 0;
+        *x2 = -b/a;
+        return 2;
+    }
+
         double discr = 0;
+
 
         discr = (b * b) - (4 * a * c);
 
@@ -178,7 +200,6 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
 
             return 1;
         }
-    }
 }
 
 void SquareEquationTest ()
