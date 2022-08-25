@@ -26,7 +26,7 @@ int SolveLinearEquation (const double b, const double c, double* x1);
 void OutputSolutions (const int NumbSolutions, const double x1, const double x2);
 void InputCoefficients (double *a, double *b, double *c);
 
-bool SquareEquationTest ();
+bool SquareEquationTest (FILE *fp);
 void UnitTest ();
 
 struct Coefficients
@@ -113,7 +113,7 @@ void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
 **/
 
 
-int SolveLinearEquation (double b, double c, double* x1)
+int SolveLinearEquation (const double b, const double c, double* x1)
 {
     if ( b == 0)
     {
@@ -122,12 +122,12 @@ int SolveLinearEquation (double b, double c, double* x1)
             return INF_SOLUTIONS;
         }
 
-        return 0;
+        return ZERO_SOLUTIONS;
     }
 
     *x1 = -(c / b);
 
-    return 1;
+    return ONE_SOLUTION;
 }
 
 ///            Solve of Square Equation
@@ -137,18 +137,19 @@ int SolveLinearEquation (double b, double c, double* x1)
 *   @param[IN] double a     first coefficient of square equation
 *   @param[IN] double b    second coefficient of square equation
 *   @param[IN] double c     third coefficient of square equation
-*   @param[OUT] double x1    first solution of square equation
-*   @param[OUT] double x2   second solution of square equation
+*   @param[OUT] double x1      first solution of square equation
+*   @param[OUT] double x2     second solution of square equation
 *   @param[OUT] int nSolutions  quantity of solutions
 *
 **/
 
 
-int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
+int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2)
 {
     if (a == 0)
     {
-        SolveLinearEquation (b, c, x1);
+        int NumberOfSolutions = SolveLinearEquation (b, c, x1);
+        return NumberOfSolutions;
     }
     else if (b == 0)
     {
@@ -159,19 +160,20 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
             *x1 =  i;
             *x2 = -i;
 
-            return 2;
+            return TWO_SOLUTIONS;
         }
 
         if (c > 0)
         {
-            return 0;
+            return ZERO_SOLUTIONS;
         }
     }
     if (c == 0)
     {
         *x1 = 0;
         *x2 = -b/a;
-        return 2;
+
+        return TWO_SOLUTIONS;
     }
 
         double discr = 0;
@@ -192,28 +194,34 @@ int SolveSquareEquation (double a, double b, double c, double* x1, double* x2)
         else if (discr < 0)
         {
 
-            return 0;
+            return ZERO_SOLUTIONS;
         }
-        else if (discr == 0)
+        else if (discr <= 0,00001)
         {
             *x1 = -b / 2 / a;
 
-            return 1;
+            return ONE_SOLUTION;
         }
 }
 
 void UnitTest()
 {
-    int i = 0;
+    int NumberOfAllTests = 0;
     int NumberOfRightTests = 0;
-    for (i; i < 28; i++)
+
+    const char *FileName = "ForUnitTest.txt";
+
+    FILE *fp = fopen (FileName, "r");
+    assert( fp != 0);
+
+    for ( ; NumberOfAllTests < 3; NumberOfAllTests++)
     {
-    NumberOfRightTests += SquareEquationTest();
+    NumberOfRightTests += SquareEquationTest(fp);
     }
-    printf ("Number of right tests %d; Number of all tests %d\n", NumberOfRightTests, i);
+    printf ("Number of right tests %d; Number of all tests %d\n", NumberOfRightTests, NumberOfAllTests);
 }
 
-bool SquareEquationTest ()
+bool SquareEquationTest (FILE *fp)
 {
     double rightx1 = 0;
     double rightx2 = 0;
@@ -225,21 +233,20 @@ bool SquareEquationTest ()
 
     int rightNumb = 0;
 
-    const char *FileName = "ForUnitTest.txt";
+    int n = fscanf (fp, "%lg %lg %lg %lg %lg %d ", &a, &b, &c, &rightx1, &rightx2, &rightNumb);
 
-    FILE *fp = fopen (FileName, "r");
-    assert( fp != 0);
-
-    fscanf (fp, "%lg %lg %lg %lg %lg %d ", &a, &b, &c, &rightx1, &rightx2, &rightNumb);
+    printf("%d\n", n);
+    if (n == EOF)
+    printf("yes/n");
 
     int NumbSolutions = SolveSquareEquation ( a, b, c, &x1, &x2);
 
-    if(!( NumbSolutions == rightNumb && x1 == rightx1 && x2 == rightx2))
+    if (!(NumbSolutions == rightNumb && x1 == rightx1 && x2 == rightx2))
     {
 
         printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
-        printf ("Expected NumbSolutions =%d, x1 =%d, x2 =%d\n", rightNumb, rightx1, rightx2);
-        printf ("%f %f %f \n", a, b, c);
+        printf ("Expected NumbSolutions =%d, x1 =%lg, x2 =%lg\n", rightNumb, rightx1, rightx2);
+        printf ("%lg %lg %d \n", x1, x2, NumbSolutions);
         return 0;
     }
     else
