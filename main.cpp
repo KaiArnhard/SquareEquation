@@ -23,18 +23,11 @@ enum NumberOfSolutions
 int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2);
 int SolveLinearEquation (const double b, const double c, double* x1);
 
-void OutputSolutions (const int NumbSolutions, const double x1, const double x2);
-void InputCoefficients (double *a, double *b, double *c);
+void OutputSolutions ();
+struct Coefficients InputCoefficients ();
 
 bool SquareEquationTest (FILE *fp);
 void UnitTest ();
-
-struct Coefficients
-    {
-        double  a;
-        double  b;
-        double  c;
-    } coeffs {0, 0, 0};
 
 struct Solutions
     {
@@ -43,39 +36,49 @@ struct Solutions
         int NumbSolutions;
      } solutions {0, 0, 0};
 
+struct Coefficients
+    {
+        double  a;
+        double  b;
+        double  c;
+
+    } coeffs {0, 0, 0};
+
 
 int main()
 {
+
     UnitTest();
 
-    InputCoefficients (&(coeffs.a), &(coeffs.b), &(coeffs.c));
+    coeffs = InputCoefficients ();
 
 
     solutions.NumbSolutions = SolveSquareEquation ( coeffs.a, coeffs.b, coeffs.c, &(solutions.x1), &(solutions.x2));
 
-    OutputSolutions (solutions.NumbSolutions, solutions.x1, solutions.x2);
+    OutputSolutions ();
 
     return 0;
 }
 
-void InputCoefficients(double *a, double *b, double *c)
+struct Coefficients InputCoefficients()
 {
     printf ("Enter coefficients a, b, c\n");
 
     int i = 0;
 
-    while (scanf ("%lg %lg %lg", a, b, c) != 3)
+    while (scanf ("%lg %lg %lg", &(coeffs.a), &(coeffs.b), &(coeffs.c) ) != 3)
     {
         while ((i = getchar()) != '\n' && i != EOF)
         {}
 
         printf("You can enter only numbers\n");
     }
+    return coeffs;
 }
 
-void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
+void OutputSolutions ()
 {
-    switch (NumbSolutions)
+    switch (solutions.NumbSolutions)
     {
         case ZERO_SOLUTIONS:
             printf("There're no solutions\n");
@@ -83,12 +86,12 @@ void OutputSolutions (const int NumbSolutions, const double x1, const double x2)
 
         case ONE_SOLUTION:
             printf ("Solution of square equation:\n");
-            printf ("%lg \n", x1);
+            printf ("%lg \n", solutions.x1);
             break;
 
         case TWO_SOLUTIONS:
             printf ("Solutions of square equation:\n");
-            printf ("%lg %lg \n", x1, x2);
+            printf ("%lg %lg \n", solutions.x1, solutions.x2);
             break;
 
         case INF_SOLUTIONS:
@@ -241,7 +244,7 @@ bool SquareEquationTest (FILE *fp)
 
     int NumbSolutions = SolveSquareEquation ( a, b, c, &x1, &x2);
 
-    if (!(NumbSolutions == rightNumb && x1 == rightx1 && x2 == rightx2))
+    if (!(NumbSolutions == rightNumb && (fabs(x1 - rightx1) <= 0.0000001) && (fabs(x2 - rightx2) <= 0.0000001)))
     {
 
         printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
