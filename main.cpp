@@ -20,31 +20,31 @@ enum NumberOfSolutions
     INF_SOLUTIONS  = -1
 };
 
-struct Solutions SolveSquareEquation ();
-struct Solutions SolveLinearEquation ();
-
-void OutputSolutions (struct Solutions solutions);
-struct Coefficients InputCoefficients ();
-
-bool SquareEquationTest (FILE *fp);
-void UnitTest ();
-
-//struct
-
-struct Solutions
-    {
-        double x1;
-        double x2;
-        int NumberOfSolutions;
-     };
-
-struct Coefficients
+typedef struct
     {
         double  a;
         double  b;
         double  c;
 
-    };
+    } Coefficients;
+
+typedef struct
+    {
+        double x1;
+        double x2;
+        int NumberOfSolutions;
+     } Solutions;
+
+Solutions SolveSquareEquation (Coefficients *coeffs, Solutions *solutions);
+Solutions SolveLinearEquation (Coefficients *coeffs, Solutions *solutions);
+
+void OutputSolutions (Solutions solutions);
+void InputCoefficients (Coefficients *coeffs);
+
+bool SquareEquationTest (FILE *fp);
+void UnitTest ();
+
+//struct
 
 
 int main()
@@ -52,38 +52,34 @@ int main()
 
     //UnitTest();
 
-    struct Coefficients coeffs {0, 0, 0};
+    Coefficients coeffs = {0, 0, 0};
+    Solutions solutions = {0, 0, 0};
 
-    coeffs = InputCoefficients ();
+    InputCoefficients (&coeffs);
 
-    struct Solutions solutions {0, 0, 0};
-
-    solutions = SolveSquareEquation ();
+    solutions = SolveSquareEquation (&coeffs, &solutions);
 
     OutputSolutions (solutions);
 
     return 0;
 }
 
-struct Coefficients InputCoefficients()
+void InputCoefficients(Coefficients *coeffs)
 {
     printf ("Enter coefficients a, b, c\n");
 
     int i = 0;
 
-    struct Coefficients coeffs;
-
-    while (scanf ("%lg %lg %lg", &(coeffs.a), &(coeffs.b), &(coeffs.c) ) != 3)
+    while (scanf ("%lg %lg %lg", &(coeffs->a), &(coeffs->b), &(coeffs->c) ) != 3)
     {
         while ((i = getchar()) != '\n' && i != EOF)
         {}
 
         printf("You can enter only numbers\n");
     }
-    return coeffs;
 }
 
-void OutputSolutions (struct Solutions solutions)
+void OutputSolutions (Solutions solutions)
 {
 
     switch (solutions.NumberOfSolutions)
@@ -124,30 +120,27 @@ void OutputSolutions (struct Solutions solutions)
 **/
 
 
-struct Solutions SolveLinearEquation ()
+Solutions SolveLinearEquation (Coefficients *coeffs, Solutions *solutions)
 {
 
-    struct Solutions solutions;
-    struct Coefficients coeffs;
-
-    if (coeffs.b == 0)
+    if (coeffs->b == 0)
     {
-        if (coeffs.c == 0)
+        if (coeffs->c == 0)
         {
-            solutions.NumberOfSolutions = INF_SOLUTIONS;
+            solutions->NumberOfSolutions = INF_SOLUTIONS;
 
-            return solutions;
+            return *solutions;
         }
 
-        solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+        solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
-        return solutions;
+        return *solutions;
     }
 
-    solutions.x1 = -(coeffs.c / coeffs.b);
-    solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+    solutions->x1 = -(coeffs->c / coeffs->b);
+    solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
-    return solutions;
+    return *solutions;
 }
 
 ///            Solve of Square Equation
@@ -164,76 +157,73 @@ struct Solutions SolveLinearEquation ()
 **/
 
 
-struct Solutions SolveSquareEquation ()
+Solutions SolveSquareEquation (Coefficients *coeffs, Solutions *solutions)
 {
 
-    struct Solutions solutions;
-    struct Coefficients coeffs;
-
-    if (coeffs.a == 0)
+    if (coeffs->a == 0)
     {
-        struct Solutions NumberOfSolutions = SolveLinearEquation ();
+        return SolveLinearEquation (coeffs, solutions);
 
-        return NumberOfSolutions;
+        //return NumberOfSolutions;
     }
-    else if (coeffs.b == 0)
+    else if (coeffs->b == 0)
     {
 
-        if (coeffs.c < 0)
+        if (coeffs->c < 0)
         {
-            int i = sqrt (-coeffs.c / coeffs.a);
+            double i = sqrt (-coeffs->c / coeffs->a);
 
-            solutions.x1 =  i;
-            solutions.x2 = -i;
-            solutions.NumberOfSolutions = TWO_SOLUTIONS;
+            solutions->x1 =  i;
+            solutions->x2 = -i;
+            solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
-            return solutions;
+            return *solutions;
         }
 
-        if (coeffs.c > 0)
+        if (coeffs->c > 0)
         {
-            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
-            return solutions;
+            return *solutions;
         }
     }
-    if (coeffs.c == 0)
+    if (coeffs->c == 0)
     {
-        solutions.x1 = 0;
-        solutions.x2 = -coeffs.b / coeffs.a;
-        solutions.NumberOfSolutions = TWO_SOLUTIONS;
+        solutions->x1 = 0;
+        solutions->x2 = -coeffs->b / coeffs->a;
+        solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
-        return solutions;
+        return *solutions;
     }
 
         double discr = 0;
 
 
-        discr = (coeffs.b * coeffs.b) - (4 * coeffs.a * coeffs.c);
+        discr = (coeffs->b * coeffs->b) - (4 * coeffs->a * coeffs->c);
 
         double sdiscr = sqrt(discr);
 
         if (discr > 0)
         {
 
-            solutions.x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
-            solutions.x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
-            solutions.NumberOfSolutions = TWO_SOLUTIONS;
+            solutions->x1 = (-coeffs->b + sdiscr) / 2 / coeffs->a;
+            solutions->x2 = (-coeffs->b - sdiscr) / 2 / coeffs->a;
+            solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
-            return solutions;
+            return *solutions;
         }
         else if (discr < 0)
         {
-            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
-            return solutions;
+            return *solutions;
         }
         else if (discr <= 0,00001)
         {
-            solutions.x1 = -coeffs.b / 2 / coeffs.a;
-            solutions.NumberOfSolutions = ONE_SOLUTION;
+            solutions->x1 = -coeffs->b / 2 / coeffs->a;
+            solutions->NumberOfSolutions = ONE_SOLUTION;
 
-            return solutions;
+            return *solutions;
         }
 }
 
