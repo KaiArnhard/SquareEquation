@@ -20,21 +20,23 @@ enum NumberOfSolutions
     INF_SOLUTIONS  = -1
 };
 
-int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2);
-int SolveLinearEquation (const double b, const double c, double* x1);
+struct Solutions SolveSquareEquation ();
+struct Solutions SolveLinearEquation ();
 
-void OutputSolutions ();
+void OutputSolutions (struct Solutions solutions);
 struct Coefficients InputCoefficients ();
 
 bool SquareEquationTest (FILE *fp);
 void UnitTest ();
 
+//struct
+
 struct Solutions
     {
         double x1;
         double x2;
-        int NumbSolutions;
-     } solutions {0, 0, 0};
+        int NumberOfSolutions;
+     };
 
 struct Coefficients
     {
@@ -42,20 +44,23 @@ struct Coefficients
         double  b;
         double  c;
 
-    } coeffs {0, 0, 0};
+    };
 
 
 int main()
 {
 
-    UnitTest();
+    //UnitTest();
+
+    struct Coefficients coeffs {0, 0, 0};
 
     coeffs = InputCoefficients ();
 
+    struct Solutions solutions {0, 0, 0};
 
-    solutions.NumbSolutions = SolveSquareEquation ( coeffs.a, coeffs.b, coeffs.c, &(solutions.x1), &(solutions.x2));
+    solutions = SolveSquareEquation ();
 
-    OutputSolutions ();
+    OutputSolutions (solutions);
 
     return 0;
 }
@@ -65,6 +70,8 @@ struct Coefficients InputCoefficients()
     printf ("Enter coefficients a, b, c\n");
 
     int i = 0;
+
+    struct Coefficients coeffs;
 
     while (scanf ("%lg %lg %lg", &(coeffs.a), &(coeffs.b), &(coeffs.c) ) != 3)
     {
@@ -76,9 +83,10 @@ struct Coefficients InputCoefficients()
     return coeffs;
 }
 
-void OutputSolutions ()
+void OutputSolutions (struct Solutions solutions)
 {
-    switch (solutions.NumbSolutions)
+
+    switch (solutions.NumberOfSolutions)
     {
         case ZERO_SOLUTIONS:
             printf("There're no solutions\n");
@@ -116,21 +124,30 @@ void OutputSolutions ()
 **/
 
 
-int SolveLinearEquation (const double b, const double c, double* x1)
+struct Solutions SolveLinearEquation ()
 {
-    if ( b == 0)
+
+    struct Solutions solutions;
+    struct Coefficients coeffs;
+
+    if (coeffs.b == 0)
     {
-        if (c == 0)
+        if (coeffs.c == 0)
         {
-            return INF_SOLUTIONS;
+            solutions.NumberOfSolutions = INF_SOLUTIONS;
+
+            return solutions;
         }
 
-        return ZERO_SOLUTIONS;
+        solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+
+        return solutions;
     }
 
-    *x1 = -(c / b);
+    solutions.x1 = -(coeffs.c / coeffs.b);
+    solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-    return ONE_SOLUTION;
+    return solutions;
 }
 
 ///            Solve of Square Equation
@@ -147,63 +164,76 @@ int SolveLinearEquation (const double b, const double c, double* x1)
 **/
 
 
-int SolveSquareEquation (const double a, const double b, const double c, double* x1, double* x2)
+struct Solutions SolveSquareEquation ()
 {
-    if (a == 0)
+
+    struct Solutions solutions;
+    struct Coefficients coeffs;
+
+    if (coeffs.a == 0)
     {
-        int NumberOfSolutions = SolveLinearEquation (b, c, x1);
+        struct Solutions NumberOfSolutions = SolveLinearEquation ();
+
         return NumberOfSolutions;
     }
-    else if (b == 0)
+    else if (coeffs.b == 0)
     {
 
-        if (c < 0)
+        if (coeffs.c < 0)
         {
-            int i = sqrt (-c / a);
-            *x1 =  i;
-            *x2 = -i;
+            int i = sqrt (-coeffs.c / coeffs.a);
 
-            return TWO_SOLUTIONS;
+            solutions.x1 =  i;
+            solutions.x2 = -i;
+            solutions.NumberOfSolutions = TWO_SOLUTIONS;
+
+            return solutions;
         }
 
-        if (c > 0)
+        if (coeffs.c > 0)
         {
-            return ZERO_SOLUTIONS;
+            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+
+            return solutions;
         }
     }
-    if (c == 0)
+    if (coeffs.c == 0)
     {
-        *x1 = 0;
-        *x2 = -b/a;
+        solutions.x1 = 0;
+        solutions.x2 = -coeffs.b / coeffs.a;
+        solutions.NumberOfSolutions = TWO_SOLUTIONS;
 
-        return TWO_SOLUTIONS;
+        return solutions;
     }
 
         double discr = 0;
 
 
-        discr = (b * b) - (4 * a * c);
+        discr = (coeffs.b * coeffs.b) - (4 * coeffs.a * coeffs.c);
 
         double sdiscr = sqrt(discr);
 
         if (discr > 0)
         {
 
-            *x1 = (-b + sdiscr) / 2 / a;
-            *x2 = (-b - sdiscr) / 2 / a;
+            solutions.x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
+            solutions.x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
+            solutions.NumberOfSolutions = TWO_SOLUTIONS;
 
-            return 2;
+            return solutions;
         }
         else if (discr < 0)
         {
+            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-            return ZERO_SOLUTIONS;
+            return solutions;
         }
         else if (discr <= 0,00001)
         {
-            *x1 = -b / 2 / a;
+            solutions.x1 = -coeffs.b / 2 / coeffs.a;
+            solutions.NumberOfSolutions = ONE_SOLUTION;
 
-            return ONE_SOLUTION;
+            return solutions;
         }
 }
 
@@ -242,7 +272,7 @@ bool SquareEquationTest (FILE *fp)
     if (n == EOF)
     printf("yes/n");
 
-    int NumbSolutions = SolveSquareEquation ( a, b, c, &x1, &x2);
+    int NumbSolutions; //= SolveSquareEquation ();
 
     if (!(NumbSolutions == rightNumb && (fabs(x1 - rightx1) <= 0.0000001) && (fabs(x2 - rightx2) <= 0.0000001)))
     {
