@@ -9,8 +9,8 @@
     printf ("Error in condition %s, in the line %d,\
     in function %s, in file %s\n", #condition,     \
      __LINE__, __PRETTY_FUNCTION__, __FILE__);     \
-}                                                  \
-
+}
+#define Epsilon 0.00001
 
 enum NumberOfSolutions
 {
@@ -35,8 +35,10 @@ typedef struct
         int NumberOfSolutions;
      } Solutions;
 
-Solutions SolveSquareEquation (Coefficients coeffs, Solutions solutions);
-Solutions SolveLinearEquation (Coefficients coeffs, Solutions solutions);
+int  SolveSquareEquation      (Coefficients coeffs, Solutions *solutions);
+void SolveLinearEquation      (Coefficients coeffs, Solutions *solutions);
+void SolveSquareEquationBnull (Coefficients coeffs, Solutions *solutions);
+void SolveSquareEquationDiscr (Coefficients coeffs, Solutions *solutions);
 
 void OutputSolutions (Solutions solutions);
 void InputCoefficients (Coefficients *coeffs);
@@ -49,15 +51,15 @@ void UnitTest ();
 
 int main()
 {
-
-    //UnitTest();
+                                                        //код ошибки?
+    UnitTest();                                         //warning in SolveSquareEquation?
 
     Coefficients coeffs = {0, 0, 0};
     Solutions solutions = {0, 0, 0};
 
     InputCoefficients (&coeffs);
 
-    solutions = SolveSquareEquation (coeffs, solutions);
+    SolveSquareEquation (coeffs, &solutions);
 
     OutputSolutions (solutions);
 
@@ -108,6 +110,50 @@ void OutputSolutions (Solutions solutions)
     }
 }
 
+void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
+{
+    if (coeffs.a > 0)
+    {
+
+        if (coeffs.c < 0)
+        {
+            double i = sqrt (-coeffs.c / coeffs.a);
+
+            solutions->x1 =  i;
+            solutions->x2 = -i;
+            solutions->NumberOfSolutions = TWO_SOLUTIONS;
+
+        }
+        else if (coeffs.c > 0)
+        {
+            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+
+        }
+        else
+        {
+            solutions->x1 = 0;
+            solutions->NumberOfSolutions = ONE_SOLUTION;
+        }
+    }
+    else
+    {
+    if (coeffs.c > 0)
+        {
+            double i = sqrt (-coeffs.c / coeffs.a);
+
+            solutions->x1 =  i;
+            solutions->x2 = -i;
+            solutions->NumberOfSolutions = TWO_SOLUTIONS;
+
+        }
+        else if (coeffs.c < 0)
+        {
+            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+
+        }
+    }
+}
+
 ///            Solve of Linear Equation
 /**
 *   This function solves linear equations bx+c=0
@@ -120,27 +166,53 @@ void OutputSolutions (Solutions solutions)
 **/
 
 
-Solutions SolveLinearEquation (Coefficients coeffs, Solutions solutions)
+void SolveLinearEquation (Coefficients coeffs, Solutions *solutions)
 {
+    ASSERT(solutions != NULL);
 
     if (coeffs.b == 0)
     {
         if (coeffs.c == 0)
         {
-            solutions.NumberOfSolutions = INF_SOLUTIONS;
+            solutions->NumberOfSolutions = INF_SOLUTIONS;
 
-            return solutions;
         }
-
-        solutions.NumberOfSolutions = ZERO_SOLUTIONS;
-
-        return solutions;
+        else
+        {
+            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+        }
     }
+    else
+    {
+        solutions->x1 = -(coeffs.c / coeffs.b);
+        solutions->NumberOfSolutions = ONE_SOLUTION;
+    }
+}
 
-    solutions.x1 = -(coeffs.c / coeffs.b);
-    solutions.NumberOfSolutions = ZERO_SOLUTIONS;
+void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
+{
+    double discr = 0;
 
-    return solutions;
+    discr = (coeffs.b * coeffs.b) - (4 * coeffs.a * coeffs.c);
+
+    double sdiscr = sqrt(discr);
+
+    if (discr > 0)
+    {
+
+        solutions->x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
+        solutions->x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
+        solutions->NumberOfSolutions = TWO_SOLUTIONS;
+    }
+    else if (discr < 0)
+    {
+        solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+    }
+    else if (discr <=Epsilon)
+    {
+        solutions->x1 = -coeffs.b / 2 / coeffs.a;
+        solutions->NumberOfSolutions = ONE_SOLUTION;
+    }
 }
 
 ///            Solve of Square Equation
@@ -157,73 +229,30 @@ Solutions SolveLinearEquation (Coefficients coeffs, Solutions solutions)
 **/
 
 
-Solutions SolveSquareEquation (Coefficients coeffs, Solutions solutions)
+int SolveSquareEquation (Coefficients coeffs, Solutions *solutions)
 {
+    ASSERT(solutions != NULL);
 
     if (coeffs.a == 0)
     {
-        return SolveLinearEquation (coeffs, solutions);
+        SolveLinearEquation (coeffs, solutions);
 
+        return 0;
     }
     else if (coeffs.b == 0)
     {
-
-        if (coeffs.c < 0)
-        {
-            double i = sqrt (-coeffs.c / coeffs.a);
-
-            solutions.x1 =  i;
-            solutions.x2 = -i;
-            solutions.NumberOfSolutions = TWO_SOLUTIONS;
-
-            return solutions;
-        }
-
-        if (coeffs.c > 0)
-        {
-            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
-
-            return solutions;
-        }
+     SolveSquareEquationBnull(coeffs, solutions);
+     return 0;
     }
     if (coeffs.c == 0)
     {
-        solutions.x1 = 0;
-        solutions.x2 = -coeffs.b / coeffs.a;
-        solutions.NumberOfSolutions = TWO_SOLUTIONS;
+        solutions->x1 = 0;
+        solutions->x2 = -coeffs.b / coeffs.a;
+        solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
-        return solutions;
+        return 0;
     }
-
-        double discr = 0;
-
-
-        discr = (coeffs.b * coeffs.b) - (4 * coeffs.a * coeffs.c);
-
-        double sdiscr = sqrt(discr);
-
-        if (discr > 0)
-        {
-
-            solutions.x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
-            solutions.x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
-            solutions.NumberOfSolutions = TWO_SOLUTIONS;
-
-            return solutions;
-        }
-        else if (discr < 0)
-        {
-            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
-
-            return solutions;
-        }
-        else if (discr <= 0,00001)
-        {
-            solutions.x1 = -coeffs.b / 2 / coeffs.a;
-            solutions.NumberOfSolutions = ONE_SOLUTION;
-
-            return solutions;
-        }
+    SolveSquareEquationDiscr(coeffs, solutions);
 }
 
 void UnitTest()
@@ -236,9 +265,9 @@ void UnitTest()
     FILE *fp = fopen (FileName, "r");
     assert( fp != 0);
 
-    for ( ; NumberOfAllTests < 3; NumberOfAllTests++)
+    for ( ; NumberOfAllTests < 7; NumberOfAllTests++)
     {
-    NumberOfRightTests += SquareEquationTest(fp);
+        NumberOfRightTests += SquareEquationTest(fp);
     }
     printf ("Number of right tests %d; Number of all tests %d\n", NumberOfRightTests, NumberOfAllTests);
 }
@@ -248,35 +277,31 @@ bool SquareEquationTest (FILE *fp)
 
     double rightx1 = 0;
     double rightx2 = 0;
-    double  x1 = 0;
-    double  x2 = 0;
 
-    double  a;
-    double  b;
-    double  c;
-
-
+    Coefficients coeffs {0, 0, 0};
+    Solutions solutions {0, 0, 0};
 
     int rightNumb = 0;
 
-    int n = fscanf (fp, "%lg %lg %lg %lg %lg %d ", &a, &b, &c, &rightx1, &rightx2, &rightNumb);
+    fscanf(fp, "%lg %lg %lg %lg %lg %d ", &(coeffs.a), &(coeffs.b), &(coeffs.c), &rightx1, &rightx2, &rightNumb);
 
-    printf("%d\n", n);
-    if (n == EOF)
-    printf("yes/n");
+    SolveSquareEquation (coeffs, &solutions);
 
-    int NumbSolutions; //= SolveSquareEquation ();
-
-    if (!(NumbSolutions == rightNumb && (fabs(x1 - rightx1) <= 0.0000001) && (fabs(x2 - rightx2) <= 0.0000001)))
+    if (!(solutions.NumberOfSolutions == rightNumb && (fabs(solutions.x1 - rightx1) <= Epsilon)     \
+          && (fabs(solutions.x2 - rightx2) <= Epsilon)))
     {
 
         printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
-        printf ("Expected NumbSolutions =%d, x1 =%lg, x2 =%lg\n", rightNumb, rightx1, rightx2);
-        printf ("%lg %lg %d \n", x1, x2, NumbSolutions);
+        printf ("\n");
+        printf ("Expected NumberOfSolutions =%d, x1 =%lg, x2 =%lg\n", rightNumb, rightx1, rightx2);
+        printf ("Real NumberOfSolutions =%lg, x1 =%lg, x2 =%lg \n", solutions.NumberOfSolutions, solutions.x1, solutions.x2);
+        printf ("\n");
+
         return 0;
     }
     else
-    printf ("%lg %lg %lg %lg %lg %d \n", a, b, c, rightx1, rightx2, rightNumb);
+    printf ("Test passed\n");
+    printf("\n");
 
     return 1;
 }
