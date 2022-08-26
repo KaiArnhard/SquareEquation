@@ -8,7 +8,7 @@
     in function %s, in file %s\n", #condition,     \
      __LINE__, __PRETTY_FUNCTION__, __FILE__);     \
 }
-const double EPSILON 0.00001;
+const double EPSILON = 0.00001;
 
 enum NumberOfSolutions
 {

@@ -4,6 +4,16 @@
 #include <math.h>
 #include <assert.h>
 
+///            Solve of Square Equation when coefficient b equal to 0
+/**
+*   This function solves square equations ax2+c=0
+*
+*   @param[IN]   struct Coefficients coeffs  structure that consists of all coefficients of square equation
+*   @param[OUT]  struct Solutions solutions  structure that consists of quantity of solutions and values of solutions
+*
+**/
+
+
 void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
 {
     if (coeffs.a > 0)
@@ -11,10 +21,10 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
 
         if (coeffs.c < 0)
         {
-            double i = sqrt (-coeffs.c / coeffs.a);
+            double ModuleOfSolution = sqrt (-coeffs.c / coeffs.a);
 
-            solutions->x1 =  i;
-            solutions->x2 = -i;
+            solutions->x1 =  ModuleOfSolution;
+            solutions->x2 = -ModuleOfSolution;
             solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
         }
@@ -33,10 +43,10 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
     {
     if (coeffs.c > 0)
         {
-            double i = sqrt (-coeffs.c / coeffs.a);
+            double SquareRootdiscr = sqrt (-coeffs.c / coeffs.a);
 
-            solutions->x1 =  i;
-            solutions->x2 = -i;
+            solutions->x1 =  SquareRootdiscr;
+            solutions->x2 = -SquareRootdiscr;
             solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
         }
@@ -52,10 +62,8 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
 /**
 *   This function solves linear equations bx+c=0
 *
-*   @param[IN]   double b    first coefficient of linear equation
-*   @param[IN]   double c    second coefficient of linear equation
-*   @param[OUT] double x1    solution of linear equation
-*   @param[OUT] int nSolutions  quantity of solutions
+*   @param[IN]   struct Coefficients coeffs  structure that consists of all coefficients of linear equation
+*   @param[OUT]  struct Solutions solutions  structure that consists of quantity of solutions and values of solutions
 *
 **/
 
@@ -64,9 +72,9 @@ void SolveLinearEquation (Coefficients coeffs, Solutions *solutions)
 {
     ASSERT(solutions != NULL);
 
-    if (coeffs.b <= EPSILON)
+    if (fabs (coeffs.b) <= EPSILON)
     {
-        if (coeffs.c == 0)
+        if (fabs (coeffs.c) <= EPSILON)
         {
             solutions->NumberOfSolutions = INF_SOLUTIONS;
 
@@ -82,6 +90,15 @@ void SolveLinearEquation (Coefficients coeffs, Solutions *solutions)
         solutions->NumberOfSolutions = ONE_SOLUTION;
     }
 }
+
+///            Solve of Square Equation with discriminant
+/**
+*   This function solves square equations ax2+bx+c=0
+*
+*   @param[IN]   struct Coefficients coeffs  structure that consists of all coefficients of square equation
+*   @param[OUT]  struct Solutions solutions  structure that consists of quantity of solutions and values of solutions
+**/
+
 
 void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
 {
@@ -102,7 +119,7 @@ void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
     {
         solutions->NumberOfSolutions = ZERO_SOLUTIONS;
     }
-    else if (discr <= Epsilon)
+    else if (fabs (discr) <= EPSILON)
     {
         solutions->x1 = -coeffs.b / 2 / coeffs.a;
         solutions->NumberOfSolutions = ONE_SOLUTION;
@@ -113,13 +130,8 @@ void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
 /**
 *   This function solves square equations ax2+bx+c=0
 *
-*   @param[IN] double a     first coefficient of square equation
-*   @param[IN] double b    second coefficient of square equation
-*   @param[IN] double c     third coefficient of square equation
-*   @param[OUT] double x1      first solution of square equation
-*   @param[OUT] double x2     second solution of square equation
-*   @param[OUT] int nSolutions  quantity of solutions
-*
+*   @param[IN]   struct Coefficients coeffs  structure that consists of all coefficients of square equation
+*   @param[OUT]  struct Solutions solutions  structure that consists of quantity of solutions and values of solutions
 **/
 
 
@@ -127,18 +139,18 @@ int SolveSquareEquation (Coefficients coeffs, Solutions *solutions)
 {
     ASSERT(solutions != NULL);
 
-    if (coeffs.a == 0)
+    if (fabs (coeffs.a) <= EPSILON)
     {
         SolveLinearEquation (coeffs, solutions);
 
         return 0;
     }
-    else if (coeffs.b == 0)
+    else if (fabs (coeffs.b) <= EPSILON)
     {
      SolveSquareEquationBnull(coeffs, solutions);
      return 0;
     }
-    if (coeffs.c == 0)
+    if (fabs (coeffs.c) <= EPSILON)
     {
         solutions->x1 = 0;
         solutions->x2 = -coeffs.b / coeffs.a;
