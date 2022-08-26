@@ -35,8 +35,8 @@ typedef struct
         int NumberOfSolutions;
      } Solutions;
 
-Solutions SolveSquareEquation (Coefficients *coeffs, Solutions *solutions);
-Solutions SolveLinearEquation (Coefficients *coeffs, Solutions *solutions);
+Solutions SolveSquareEquation (Coefficients coeffs, Solutions solutions);
+Solutions SolveLinearEquation (Coefficients coeffs, Solutions solutions);
 
 void OutputSolutions (Solutions solutions);
 void InputCoefficients (Coefficients *coeffs);
@@ -57,7 +57,7 @@ int main()
 
     InputCoefficients (&coeffs);
 
-    solutions = SolveSquareEquation (&coeffs, &solutions);
+    solutions = SolveSquareEquation (coeffs, solutions);
 
     OutputSolutions (solutions);
 
@@ -120,27 +120,27 @@ void OutputSolutions (Solutions solutions)
 **/
 
 
-Solutions SolveLinearEquation (Coefficients *coeffs, Solutions *solutions)
+Solutions SolveLinearEquation (Coefficients coeffs, Solutions solutions)
 {
 
-    if (coeffs->b == 0)
+    if (coeffs.b == 0)
     {
-        if (coeffs->c == 0)
+        if (coeffs.c == 0)
         {
-            solutions->NumberOfSolutions = INF_SOLUTIONS;
+            solutions.NumberOfSolutions = INF_SOLUTIONS;
 
-            return *solutions;
+            return solutions;
         }
 
-        solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+        solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-        return *solutions;
+        return solutions;
     }
 
-    solutions->x1 = -(coeffs->c / coeffs->b);
-    solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+    solutions.x1 = -(coeffs.c / coeffs.b);
+    solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-    return *solutions;
+    return solutions;
 }
 
 ///            Solve of Square Equation
@@ -157,73 +157,72 @@ Solutions SolveLinearEquation (Coefficients *coeffs, Solutions *solutions)
 **/
 
 
-Solutions SolveSquareEquation (Coefficients *coeffs, Solutions *solutions)
+Solutions SolveSquareEquation (Coefficients coeffs, Solutions solutions)
 {
 
-    if (coeffs->a == 0)
+    if (coeffs.a == 0)
     {
         return SolveLinearEquation (coeffs, solutions);
 
-        //return NumberOfSolutions;
     }
-    else if (coeffs->b == 0)
+    else if (coeffs.b == 0)
     {
 
-        if (coeffs->c < 0)
+        if (coeffs.c < 0)
         {
-            double i = sqrt (-coeffs->c / coeffs->a);
+            double i = sqrt (-coeffs.c / coeffs.a);
 
-            solutions->x1 =  i;
-            solutions->x2 = -i;
-            solutions->NumberOfSolutions = TWO_SOLUTIONS;
+            solutions.x1 =  i;
+            solutions.x2 = -i;
+            solutions.NumberOfSolutions = TWO_SOLUTIONS;
 
-            return *solutions;
+            return solutions;
         }
 
-        if (coeffs->c > 0)
+        if (coeffs.c > 0)
         {
-            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-            return *solutions;
+            return solutions;
         }
     }
-    if (coeffs->c == 0)
+    if (coeffs.c == 0)
     {
-        solutions->x1 = 0;
-        solutions->x2 = -coeffs->b / coeffs->a;
-        solutions->NumberOfSolutions = TWO_SOLUTIONS;
+        solutions.x1 = 0;
+        solutions.x2 = -coeffs.b / coeffs.a;
+        solutions.NumberOfSolutions = TWO_SOLUTIONS;
 
-        return *solutions;
+        return solutions;
     }
 
         double discr = 0;
 
 
-        discr = (coeffs->b * coeffs->b) - (4 * coeffs->a * coeffs->c);
+        discr = (coeffs.b * coeffs.b) - (4 * coeffs.a * coeffs.c);
 
         double sdiscr = sqrt(discr);
 
         if (discr > 0)
         {
 
-            solutions->x1 = (-coeffs->b + sdiscr) / 2 / coeffs->a;
-            solutions->x2 = (-coeffs->b - sdiscr) / 2 / coeffs->a;
-            solutions->NumberOfSolutions = TWO_SOLUTIONS;
+            solutions.x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
+            solutions.x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
+            solutions.NumberOfSolutions = TWO_SOLUTIONS;
 
-            return *solutions;
+            return solutions;
         }
         else if (discr < 0)
         {
-            solutions->NumberOfSolutions = ZERO_SOLUTIONS;
+            solutions.NumberOfSolutions = ZERO_SOLUTIONS;
 
-            return *solutions;
+            return solutions;
         }
         else if (discr <= 0,00001)
         {
-            solutions->x1 = -coeffs->b / 2 / coeffs->a;
-            solutions->NumberOfSolutions = ONE_SOLUTION;
+            solutions.x1 = -coeffs.b / 2 / coeffs.a;
+            solutions.NumberOfSolutions = ONE_SOLUTION;
 
-            return *solutions;
+            return solutions;
         }
 }
 
@@ -246,13 +245,17 @@ void UnitTest()
 
 bool SquareEquationTest (FILE *fp)
 {
+
     double rightx1 = 0;
     double rightx2 = 0;
     double  x1 = 0;
     double  x2 = 0;
-    double   a = 0;
-    double   b = 0;
-    double   c = 0;
+
+    double  a;
+    double  b;
+    double  c;
+
+
 
     int rightNumb = 0;
 
