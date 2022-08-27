@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "quadratic.h"
+#include "input.h"
 
 ///            Input of Square Equation coefficients
 /**

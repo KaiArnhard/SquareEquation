@@ -1,4 +1,5 @@
 #include "quadratic.h"
+#include "modulecomparison.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -72,9 +73,9 @@ void SolveLinearEquation (Coefficients coeffs, Solutions *solutions)
 {
     ASSERT(solutions != NULL);
 
-    if (fabs (coeffs.b) <= EPSILON)
+    if (modulecomparison(coeffs.b, 0))
     {
-        if (fabs (coeffs.c) <= EPSILON)
+        if (modulecomparison(coeffs.c, 0))
         {
             solutions->NumberOfSolutions = INF_SOLUTIONS;
 
@@ -108,7 +109,12 @@ void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
 
     double sdiscr = sqrt(discr);
 
-    if (discr > 0)
+    if (modulecomparison(discr, 0))
+    {
+        solutions->x1 = -coeffs.b / 2 / coeffs.a;
+        solutions->NumberOfSolutions = ONE_SOLUTION;
+    }
+    else if (discr > 0)
     {
 
         solutions->x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
@@ -118,11 +124,6 @@ void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
     else if (discr < 0)
     {
         solutions->NumberOfSolutions = ZERO_SOLUTIONS;
-    }
-    else if (fabs (discr) <= EPSILON)
-    {
-        solutions->x1 = -coeffs.b / 2 / coeffs.a;
-        solutions->NumberOfSolutions = ONE_SOLUTION;
     }
 }
 
@@ -139,18 +140,18 @@ int SolveSquareEquation (Coefficients coeffs, Solutions *solutions)
 {
     ASSERT(solutions != NULL);
 
-    if (fabs (coeffs.a) <= EPSILON)
+    if (modulecomparison(coeffs.a, 0))
     {
         SolveLinearEquation (coeffs, solutions);
 
         return 0;
     }
-    else if (fabs (coeffs.b) <= EPSILON)
+    else if (modulecomparison(coeffs.b, 0))
     {
      SolveSquareEquationBnull(coeffs, solutions);
      return 0;
     }
-    if (fabs (coeffs.c) <= EPSILON)
+    if (modulecomparison(coeffs.c, 0))
     {
         solutions->x1 = 0;
         solutions->x2 = -coeffs.b / coeffs.a;

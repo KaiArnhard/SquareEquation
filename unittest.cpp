@@ -4,6 +4,7 @@
 #include <assert.h>
 #include "quadratic.h"
 #include "unittest.h"
+#include "modulecomparison.h"
 
 ///            Unit Test of Square Equation
 /**
@@ -51,8 +52,8 @@ bool SquareEquationTest (FILE *fp)
 
     SolveSquareEquation (coeffs, &solutions);
 
-    if (!(solutions.NumberOfSolutions == rightNumb && (fabs(solutions.x1 - rightx1) <= EPSILON)     \
-          && (fabs (solutions.x2 - rightx2) <= EPSILON)))
+    if (!(solutions.NumberOfSolutions == rightNumb && modulecomparison(solutions.x2, rightx2)     \
+          && modulecomparison(solutions.x2, rightx2)))
     {
         printf ("failed\n");
         printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
