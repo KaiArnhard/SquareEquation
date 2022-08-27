@@ -1,7 +1,5 @@
 #include "quadratic.h"
-#include "output.h"
-#include <stdio.h>
-#include <assert.h>
+#include "io.h"
 
 
 ///            Output of Square Equation solutions
@@ -19,25 +17,35 @@ void OutputSolutions (Solutions solutions)
     switch (solutions.NumberOfSolutions)
     {
         case ZERO_SOLUTIONS:
+        {
             printf("There're no solutions\n");
             break;
+        }
 
         case ONE_SOLUTION:
+        {
             printf ("Solution of square equation:\n");
             printf ("%lg \n", solutions.x1);
             break;
+        }
 
         case TWO_SOLUTIONS:
+        {
             printf ("Solutions of square equation:\n");
             printf ("%lg %lg \n", solutions.x1, solutions.x2);
             break;
+        }
 
         case INF_SOLUTIONS:
+        {
             printf ("All numbers\n");
             break;
+         }
 
         default:
-            assert(0);
+        {
+            assert(0 && "Wrong Number of solutions");
             break;
+        }
     }
 }

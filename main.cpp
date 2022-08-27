@@ -1,17 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <assert.h>
 #include "quadratic.h"
-#include "input.h"
-#include "output.h"
+#include "io.h"
 #include "unittest.h"
 
 
 int main(int argc, char *argv[])
 {
 
-    Coefficients coeffs = {0, 0, 0};
+    Coefficients coeffs = {NAN, NAN, NAN};
     Solutions solutions = {0, 0, 0};
 
     int id = 1;
@@ -23,34 +18,39 @@ int main(int argc, char *argv[])
                 switch (argv[id][1])
                 {
                     case 'h' :
-
-                    printf( "-h - show information about launch\n -t - launch test mode\n");
-                    break;
-
+                    {
+                        printf( "-h - show information about launch\n -t - launch test mode\n");
+                        break;
+                    }
                     case 't' :
-
-                    UnitTest();
-                    break;
-
+                    {
+                        UnitTest();
+                        break;
+                    }
                     default:
-
-                    printf ("Wrong command\n");
-
-                    break;
-
+                    {
+                        printf ("Wrong command: %c, type -h for help\n", argv[id][1]);
+                        break;
+                    }
                 }
             }
             else
             {
-                printf ("Wrong command\n");
+                printf ("Wrong argument: %c, type -h for help\n", *argv[id]);
             }
     }
     if (argc == 1)
-    {
-        InputCoefficients (&coeffs);
-        SolveSquareEquation (coeffs, &solutions);
-        OutputSolutions (solutions);
-    }
+        {
+            if (InputCoefficients (&coeffs))
+            {
+                return 0;
+            }
+            else
+            {
+                SolveSquareEquation (coeffs, &solutions);
+                OutputSolutions (solutions);
+            }
+        }
 
     return 0;
 }

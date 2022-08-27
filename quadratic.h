@@ -1,6 +1,11 @@
 #ifndef QUADRATIC_H
 #define QUADRATIC_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <assert.h>
+
 #define ASSERT(condition)                          \
 {                                                  \
     if (!(condition))                              \

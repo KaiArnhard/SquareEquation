@@ -1,9 +1,5 @@
 #include "quadratic.h"
-#include "modulecomparison.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <assert.h>
+#include "common.h"
 
 ///            Solve of Square Equation when coefficient b equal to 0
 /**
@@ -17,10 +13,10 @@
 
 void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
 {
-    if (coeffs.a > 0)
+    if (coeffs.a > EPSILON)
     {
 
-        if (coeffs.c < 0)
+        if (coeffs.c < EPSILON)
         {
             double ModuleOfSolution = sqrt (-coeffs.c / coeffs.a);
 
@@ -29,7 +25,7 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
             solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
         }
-        else if (coeffs.c > 0)
+        else if (coeffs.c > EPSILON)
         {
             solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
@@ -42,7 +38,7 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
     }
     else
     {
-    if (coeffs.c > 0)
+    if (coeffs.c > EPSILON)
         {
             double SquareRootdiscr = sqrt (-coeffs.c / coeffs.a);
 
@@ -51,7 +47,7 @@ void SolveSquareEquationBnull(Coefficients coeffs, Solutions *solutions)
             solutions->NumberOfSolutions = TWO_SOLUTIONS;
 
         }
-        else if (coeffs.c < 0)
+        else if (coeffs.c < EPSILON)
         {
             solutions->NumberOfSolutions = ZERO_SOLUTIONS;
 
@@ -116,7 +112,6 @@ void SolveSquareEquationDiscr(Coefficients coeffs, Solutions *solutions)
     }
     else if (discr > 0)
     {
-
         solutions->x1 = (-coeffs.b + sdiscr) / 2 / coeffs.a;
         solutions->x2 = (-coeffs.b - sdiscr) / 2 / coeffs.a;
         solutions->NumberOfSolutions = TWO_SOLUTIONS;
@@ -148,9 +143,11 @@ int SolveSquareEquation (Coefficients coeffs, Solutions *solutions)
     }
     else if (modulecomparison(coeffs.b, 0))
     {
-     SolveSquareEquationBnull(coeffs, solutions);
-     return 0;
+        SolveSquareEquationBnull(coeffs, solutions);
+
+        return 0;
     }
+
     if (modulecomparison(coeffs.c, 0))
     {
         solutions->x1 = 0;
@@ -159,6 +156,7 @@ int SolveSquareEquation (Coefficients coeffs, Solutions *solutions)
 
         return 0;
     }
+
     SolveSquareEquationDiscr(coeffs, solutions);
 
     return 0;

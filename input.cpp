@@ -1,6 +1,5 @@
-#include <stdio.h>
 #include "quadratic.h"
-#include "input.h"
+#include "io.h"
 
 ///            Input of Square Equation coefficients
 /**
@@ -10,17 +9,25 @@
 *
 **/
 
-void InputCoefficients(Coefficients *coeffs)
+int InputCoefficients(Coefficients *coeffs)
 {
     printf ("Enter coefficients a, b, c\n");
 
-    int i = 0;
+    int nextchar = 0;
 
     while (scanf ("%lg %lg %lg", &(coeffs->a), &(coeffs->b), &(coeffs->c) ) != 3)
     {
-        while ((i = getchar()) != '\n' && i != EOF)
+        if ((nextchar = getchar()) == 'e')
+        {
+            printf ("Exiting\n");
+
+            return ERROR;
+        }
+        while ((nextchar = getchar()) != '\n' &&  nextchar != EOF)
         {}
 
-        printf("You can enter only numbers\n");
+        printf("You can enter only numbers or 'e' to exit\n");
     }
+
+    return ALLRIGHT;
 }
