@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
                 {
                     case 'h' :
                     {
-                        printf( "-h - show information about launch\n -t - launch test mode\n");
+                        printf( "-h - show information about launch\n-t - launch test mode\n");
                         break;
                     }
                     case 't' :

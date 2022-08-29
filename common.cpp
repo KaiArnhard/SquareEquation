@@ -7,15 +7,34 @@
 *
 *   @param[IN]   double  FirstNumber   first comparing number
 *   @param[IN]   double SecondNumber  second comparing number
+*   @return     On success return TRUE, on failure return FALSE
 *
 **/
 
 
-int modulecomparison(double FirstNumber, double SecondNumber)
+int ModuleComparison(double FirstNumber, double SecondNumber)
 {
-   if (fabs (a - b) <= EPSILON)
-   return TRUE;
-   else
-   return FALSE;
+    if (fabs (FirstNumber - SecondNumber) <= EPSILON)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+
+///            Comparison of double number and Null
+/**
+*   This function compare double number with Null
+*
+*   @param[IN]   double  FirstNumber   first comparing number
+*   @return     On success return TRUE, on failure return FALSE
+*
+**/
+
+int ModuleComparisonWithNull(double Number)
+{
+    if (fabs (Number) <= EPSILON)
+        return TRUE;
+    else
+        return FALSE;
 }
 

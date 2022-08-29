@@ -6,6 +6,7 @@
 *   This function inputs square equation ax2+bx+c=0 coefficients
 *
 *   @param[IN]   struct Coefficients coeffs  structure that consists of all coefficients of square equation
+*   @return     On success return ALLRIGHT, on failure return EXIT
 *
 **/
 
@@ -21,11 +22,10 @@ int InputCoefficients(Coefficients *coeffs)
         {
             printf ("Exiting\n");
 
-            return ERROR;
+            return EXIT;
         }
-        while ((nextchar = getchar()) != '\n' &&  nextchar != EOF)
-        {}
 
+        ClearOfBuffer(nextchar);
         printf("You can enter only numbers or 'e' to exit\n");
     }
 

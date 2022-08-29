@@ -8,6 +8,7 @@ enum StateOfComparison
     FALSE = 0
 };
 
-int modulecomparison (double a, double b);
+int ModuleComparison (double a, double b);
+int ModuleComparisonWithNull(double Number);
 
 #endif

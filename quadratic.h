@@ -38,10 +38,11 @@ typedef struct
         int NumberOfSolutions;
      } Solutions;
 
-int  SolveSquareEquation      (Coefficients coeffs, Solutions *solutions);
+int  SolveSquareEquation            (Coefficients coeffs, Solutions *solutions);
 
-void SolveLinearEquation      (Coefficients coeffs, Solutions *solutions);
-void SolveSquareEquationBnull (Coefficients coeffs, Solutions *solutions);
-void SolveSquareEquationDiscr (Coefficients coeffs, Solutions *solutions);
-
+void SolveLinearEquation            (Coefficients coeffs, Solutions *solutions);
+void SolveSquareEquationBnull       (Coefficients coeffs, Solutions *solutions);
+void SolveSquareEquationDiscr       (Coefficients coeffs, Solutions *solutions);
+Solutions SolveSquareEquationPlusA  (Coefficients coeffs, Solutions solutions);
+Solutions SolveSquareEquationMinusA (Coefficients coeffs, Solutions solutions);
 #endif

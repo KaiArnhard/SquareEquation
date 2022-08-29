@@ -10,7 +10,7 @@
 
 void UnitTest()
 {
-    int NumberOfAllTests = 1;
+    int NumberOfAllTests = 0;
     int NumberOfRightTests = 0;
 
     const char *FileName = "ForUnitTest.txt";
@@ -18,7 +18,7 @@ void UnitTest()
     FILE *fp = fopen (FileName, "r");
     assert( fp != 0);
 
-    for ( ; NumberOfAllTests <= 17; NumberOfAllTests++)
+    for ( ; NumberOfAllTests < 17; ++NumberOfAllTests)
     {
         printf("Test Number %d. Status:", NumberOfAllTests);
         NumberOfRightTests += SquareEquationTest(fp);
@@ -31,6 +31,7 @@ void UnitTest()
 *   This function tests function SolveSquareEquation one time
 *
 *   @param[IN]   FILE *fp   pointer of file which includes quantity of solutions and values of solutions
+*   @return     On success return SUCCESS, on failure return FAULT
 **/
 
 bool SquareEquationTest (FILE *fp)
@@ -48,22 +49,19 @@ bool SquareEquationTest (FILE *fp)
 
     SolveSquareEquation (coeffs, &solutions);
 
-    if (!(solutions.NumberOfSolutions == rightNumb && modulecomparison(solutions.x2, rightx2)     \
-          && modulecomparison(solutions.x2, rightx2)))
+    if (!(solutions.NumberOfSolutions == rightNumb && ModuleComparison(solutions.x2, rightx2)     \
+          && ModuleComparison(solutions.x2, rightx2)))
     {
         printf ("failed\n");
-        printf ("Error in condition, in the line %d, in function %s, in file %s\n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
-        printf ("\n");
+        printf ("Error in condition, in the line %d, in function %s, in file %s\n \n", __LINE__, __PRETTY_FUNCTION__, __FILE__);
         printf ("Expected NumberOfSolutions =%d, x1 =%lg, x2 =%lg\n", rightNumb, rightx1, rightx2);
-        printf ("Real NumberOfSolutions =%d, x1 =%lg, x2 =%lg \n", solutions.NumberOfSolutions, solutions.x1, solutions.x2);
-        printf ("\n");
+        printf ("Real NumberOfSolutions =%d, x1 =%lg, x2 =%lg \n \n", solutions.NumberOfSolutions, solutions.x1, solutions.x2);
 
         return FAULT;
     }
     else
     {
-    printf ("passed\n");
-    printf("\n");
+    printf ("passed\n \n");
 
     return SUCCESS;
     }

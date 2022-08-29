@@ -5,11 +5,12 @@
 
 enum StatusOfInput
 {
-    ERROR = 1,
+    EXIT     = 1,
     ALLRIGHT = 0
 };
 
 int InputCoefficients (Coefficients *coeffs);
+void ClearOfBuffer (int nextchar);
 
 void OutputSolutions (Solutions solutions);
 
